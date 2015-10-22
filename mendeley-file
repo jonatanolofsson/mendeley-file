@@ -19,11 +19,11 @@ def main():
                 if f.split("@")[-1] == "www.mendeley.com.sqlite":
                     mendeley_db = os.path.join(mendeley_dir, f)
     except OSError:
-        print "Could not find Mendeley directory"
+        print("Could not find Mendeley directory")
         return 1
 
     if mendeley_db is None:
-        print "Could not find Mendeley database"
+        print("Could not find Mendeley database")
         return 1
 
     try:
@@ -33,7 +33,7 @@ def main():
 
             documents = list(cur.execute("select id from Documents where citationKey == '%s' limit 1" % key))
             if not documents:
-                print "Could not find any documents with citation key '%s'" % key
+                print("Could not find any documents with citation key '%s'" % key)
                 continue
 
             for document in documents:
@@ -41,7 +41,7 @@ def main():
 
                 files = list(cur.execute("select hash from DocumentFiles where documentId == %d" % doc_id))
                 if not files:
-                    print "Document with citation key '%s' has no files associated with it" % key
+                    print("Document with citation key '%s' has no files associated with it" % key)
                     continue
 
                 for f in files:
@@ -49,13 +49,13 @@ def main():
                     cur.execute("select localUrl from Files where hash = '%s'" % file_hash)
                     for row in cur:
                         file_url = row[0]
-                        print "Opening %s" % file_url
+                        print("Opening %s" % file_url)
                         os.system("/usr/bin/xdg-open '%s' 2> /dev/null &" % file_url)
 
         cur.close()
 
     except sqlite3.OperationalError as e:
-        print "Database error: %s" % e
+        print("Database error: %s" % e)
 
 
 
